@@ -12,16 +12,15 @@ function slice($str, $bp)
             $currentString = "";
         }
         $currentString .= ($currentString ? " " : "") . $word;// Nếu mảng hiện tại không null thì + khoảng trống
-                                                                            // + với chuỗi con
+        // + với chuỗi con
     }
     if ($currentString) {
         $result[] = $currentString;
     }
-    if (empty($result)){
+    if (empty($result)) {
         echo "<p> There is nothing here. </p>";
-    }
-    else{
-        foreach ($result as $r){
+    } else {
+        foreach ($result as $r) {
             echo "<p> $r </p>";
         }
     }
@@ -39,10 +38,10 @@ function slice($str, $bp)
 </head>
 <body>
 <form action="form.php" method="post">
-    String: <input type="text" name="string" value="<?php echo $inputString?>">
-    Brake point: <input type="text" name="bp" value="<?php echo $inputBp?>">
+    String: <input type="text" name="string" value="<?php echo $inputString ?>">
+    Brake point: <input type="text" name="bp" value="<?php echo $inputBp ?>">
     <input type="submit" value="Slice">
 </form>
-<?php slice($inputString,$inputBp); ?>
+<?php slice($inputString, $inputBp); ?>
 </body>
 </html>
