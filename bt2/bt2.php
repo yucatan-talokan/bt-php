@@ -6,8 +6,12 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+
+    </style>
 </head>
 <body>
+
 <table style="border-collapse: collapse;margin-left: 300px;margin-top: 0" border="1">
     <?php
     //Tạo bàn cờ
@@ -26,49 +30,99 @@
         $row = ceil($item / 8) - 1;
         $col = ($item - 1) % 8;
         $chessboard[$row][$col] = 1;
-        echo $item."-";
+        echo $item . "-";
+    }
+    echo "<br>";
+    foreach ($chessboard as $row) {
+        foreach ($row as $value) {
+            echo $value . "-";
+        }
+        echo "<br>";
     }
 
-    for ($row=0;$row<8;$row++){
-        for ($col=0;$col<8;$col++){
-            if ($chessboard[$row][$col] === 1) {
-                for ($k = 0; $k < 8; $k++) {
-                    //check đường ngang
-                    if ($k != $col) {
-                        $chessboard[$row][$k] = 2;
-                    }
-                    //check đường dọc
-                    if ($k != $row) {
-                        $chessboard[$k][$col] = 2;
-                    }
-                    //check đường chéo
-                    $diagonal1 = $row - $col + $k;
-                    $diagonal2 = $row + $col - $k;
-                    if ($diagonal1 >= 0 && $diagonal1 < 8 && $diagonal1 != $row && $diagonal1 != $col) {
-                        $chessboard[$diagonal1][$k] = 2;
 
+    function isSafe($chessboard, $row, $col): bool
+    {
+        if ($chessboard[$row][$col] == 1) {
+            for ($k = 0; $k < 8; $k++) {
+                //check hàng ngang
+                if ($chessboard[$row][$col] == $chessboard[$row][$k] && $col != $k) {
+                    return false;
+                }
+
+            }
+            for ($k = 0; $k < 8; $k++) {
+                //check hàng dọc
+                if ($chessboard[$row][$col] == $chessboard[$k][$col] && $row != $k) {
+                    return false;
+                }
+            }
+            if ($row==$col){
+                for ($k = 0; $k < 8; $k++) {//check đường chéo từ trái sang phải
+                    if ($chessboard[$row][$col] == $chessboard[$k][$k] && $row != $k && $col != $k) {
+                        return false;
                     }
-                    if ($diagonal2 >= 0 && $diagonal2 < 8 && $diagonal2 != $row && $diagonal2 != $col) {
-                        $chessboard[$diagonal2][$k] = 2;
+                }
+            }
+            if ($row+$col==7){
+                for ($k = 0; $k < 8; $k++) {
+                    if ($chessboard[$row][$col] == $chessboard[7 - $k][$k] && $row != 7 - $k && $col != $k) {
+                        return false;
+                    }
+                }
+            }
+            //check chéo trái sang phải
+            if ($row > $col) {
+                for ($k = 0; $k < 8 - $row+$col; $k++) {
+                    if ($chessboard[$row][$col] == $chessboard[$row - $col + $k][$k] && $row != ($row - $col + $k) && $col != $k) {
+                        return false;
+                    }
+                }
+            }
+            if ($col > $row) {
+                for ($k = 0; $k < 8 - $col+$row; $k++) {
+                    if ($chessboard[$row][$col] == $chessboard[$k][$col - $row + $k] && $row != $k && $col != ($col - $row + $k)) {
+                        return false;
+                    }
+                }
+            }
+            //check chéo phải sang trái
+            if ($row + $col <= 6) {
+                for ($k = 0; $k <= $row + $col; $k++) {
+                    if ($chessboard[$row][$col] == $chessboard[$row + $col - $k][$k] && $row != $row + $col - $k && $col != $k) {
+                        return false;
+                    }
+                }
+            }
+
+            if ($row + $col >= 8) {
+                for ($k = $row + $col - 7; $k <= 7; $k++) {
+                    if ($chessboard[$row][$col] == $chessboard[$row + $col - $k][$k] && $row != $row + $col - $k && $col != $k) {
+                        return false;
                     }
                 }
             }
         }
+        return true;
     }
+
 
     for ($row = 0; $row < 8; $row++) {
         echo "<tr>";
 
         for ($col = 0; $col < 8; $col++) {
-            $color = ($row + $col) % 2 == 0 ? "white" : "black";
+            $fontweight = "";
+            $color = (isSafe($chessboard, $row, $col) && $chessboard[$row][$col] === 1) ? "blue" : (($row + $col) % 2 == 0 ? "white" : "black");
             $numColor = ($row + $col) % 2 != 0 ? "white" : "black";
-
-            if ($chessboard[$row][$col] === 1) {
-                $color="red";
+            foreach ($randArray as $item) {
+                if ($num == $item) {
+                    $numColor = "red";
+                    $fontweight = "bold";
+                }
             }
 
 
-            echo "<td height='80px' width='80px' style='background-color: $color'>
+            echo "<td height='80px' width='80px' style='background-color: $color;font-weight:$fontweight '>
                             <span style='color: $numColor'>$num</span>
                     </td>";
             $num++;
